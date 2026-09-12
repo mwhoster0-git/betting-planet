@@ -15,6 +15,7 @@ external endpoints, fixtures, or statistics dashboard are included.
 - `includes/class-statistics.php`: reusable settled totals and request-local caching.
 - `includes/class-shortcodes.php`: four calculation handlers and the open-bets display shortcode.
 - `includes/class-shortcode-catalog.php`: read-only native Shortcodes taxonomy library.
+- `includes/class-import-export.php`: admin JSON export/import for moving tips between sites.
 - `includes/class-open-bets.php`, `templates/open-bets.php`, `assets/open-bets.css`, `assets/open-bets.js`: dynamic open-tip card deck based on the supplied HTML mockup.
 - `tests/integration.php`: CLI integration checks using the local WordPress installation; database changes roll back. Requires InnoDB tables and an administrator. Run only on local/test installations without persistent object caching or external save-hook side effects.
 
@@ -157,6 +158,23 @@ release includes the open-bets shortcode layout. Featured images require theme t
 Deactivation retains all tips and meta; no uninstall deletion is provided.
 
 Run checks from the project root: `php wp-content/plugins/betting-planet-tips/tests/integration.php`.
+
+### Import / Export
+
+Use **Betting Tips → Import / Export** to download a JSON file from one site and
+upload it to another site running this plugin. The file contains native post title,
+content, excerpt, slug, status, dates, author login for reference, betting metadata,
+league slug/name, calculated performance metadata, and a featured image URL for
+reference. The importer does not sideload media; upload or map featured images
+separately if the live site needs them.
+
+Import creates missing league terms, validates every betting input with the same
+rules as the edit screen, writes the betting metadata, and runs settlement so status,
+return, profit, and yield are recalculated on the destination site. Each row includes
+a stable UID. Imported posts store that UID in `_bpt_import_uid`, so importing the
+same file again updates the existing destination tips instead of creating duplicates.
+Post statuses are preserved for `publish`, `draft`, `pending`, `private`, and
+`future`; unknown statuses import as drafts.
 
 ### Open bets display
 

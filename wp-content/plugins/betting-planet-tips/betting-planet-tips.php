@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Betting Tips
  * Description: Manually managed individual betting tips with automatic settlement.
- * Version: 1.3.2
+ * Version: 1.4.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Text Domain: betting-planet-tips
@@ -14,7 +14,7 @@ namespace BettingPlanetTips;
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'BPT_VERSION', '1.3.2' );
+define( 'BPT_VERSION', '1.4.0' );
 define( 'BPT_URL', plugin_dir_url( __FILE__ ) );
 
 require_once __DIR__ . '/includes/class-fields.php';
@@ -27,6 +27,7 @@ require_once __DIR__ . '/includes/class-statistics.php';
 require_once __DIR__ . '/includes/class-shortcodes.php';
 require_once __DIR__ . '/includes/class-open-bets.php';
 require_once __DIR__ . '/includes/class-shortcode-catalog.php';
+require_once __DIR__ . '/includes/class-import-export.php';
 
 add_action( 'init', array( Post_Type::class, 'register' ) );
 add_action( 'init', array( Leagues::class, 'register' ), 9 );
@@ -38,6 +39,9 @@ add_action( 'admin_init', array( Shortcode_Catalog::class, 'install' ) );
 add_filter( 'manage_edit-bpt_shortcode_columns', array( Shortcode_Catalog::class, 'columns' ) );
 add_filter( 'manage_bpt_shortcode_custom_column', array( Shortcode_Catalog::class, 'column' ), 10, 3 );
 add_action( 'after-bpt_shortcode-table', array( Shortcode_Catalog::class, 'help' ) );
+add_action( 'admin_menu', array( Import_Export::class, 'menu' ) );
+add_action( 'admin_post_' . Import_Export::ACTION_EXPORT, array( Import_Export::class, 'handle_export' ) );
+add_action( 'admin_post_' . Import_Export::ACTION_IMPORT, array( Import_Export::class, 'handle_import' ) );
 add_action( 'clean_post_cache', array( Statistics::class, 'invalidate' ), 10, 0 );
 add_action( 'added_post_meta', array( Statistics::class, 'meta_changed' ), 10, 3 );
 add_action( 'updated_post_meta', array( Statistics::class, 'meta_changed' ), 10, 3 );

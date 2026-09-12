@@ -10,6 +10,7 @@ require_once dirname( __DIR__ ) . '/betting-planet-tips.php';
 
 use BettingPlanetTips\Admin;
 use BettingPlanetTips\Fields;
+use BettingPlanetTips\Import_Export;
 use BettingPlanetTips\Leagues;
 use BettingPlanetTips\Meta_Boxes;
 use BettingPlanetTips\Post_Type;
@@ -183,6 +184,33 @@ try {
 	bpt_test_assert( false === update_post_meta( $post_id, '_bpt_league', 'premier-league' ), 'Legacy metadata writes should be rejected.' );
 	Leagues::assign( $post_id, '' );
 	bpt_test_assert( '' === Leagues::selected( $post_id ), 'Blank league failed to clear relationship.' );
+	$import_uid = 'bpt-test-import-' . wp_generate_uuid4();
+	$imported = Import_Export::import_data( array(
+		'tips' => array(
+			array(
+				'uid' => $import_uid, 'title' => 'Imported BPT tip', 'slug' => 'imported-bpt-tip',
+				'content' => '<p>Imported betting analysis.</p>', 'excerpt' => '', 'status' => 'publish',
+				'league' => array( 'slug' => 'bpt-import-league', 'name' => 'BPT Import League' ),
+				'meta' => array(
+					'season' => '2026/27', 'match_datetime' => '2026-09-12 20:00:00',
+					'home_team' => 'Arsenal', 'away_team' => 'Chelsea',
+					'bet_selection' => '1', 'stake' => '4', 'odds' => '2.25', 'match_result' => '1',
+				),
+			),
+		),
+	) );
+	bpt_test_assert( ! is_wp_error( $imported ) && 1 === $imported['created'], 'Import should create a tip.' );
+	$imported_ids = get_posts( array( 'post_type' => 'betting_tip', 'post_status' => 'any', 'fields' => 'ids', 'meta_key' => Import_Export::UID_META, 'meta_value' => $import_uid ) );
+	bpt_test_assert( 1 === count( $imported_ids ), 'Imported UID lookup failed.' );
+	$imported_id = (int) $imported_ids[0];
+	bpt_test_assert( 'bpt-import-league' === Leagues::selected( $imported_id ) && 'won' === get_post_meta( $imported_id, '_bpt_bet_status', true ) && '5.00' === get_post_meta( $imported_id, '_bpt_profit', true ), 'Imported tip taxonomy/settlement failed.' );
+	$exported = Import_Export::export_data();
+	$match = array_values( array_filter( $exported['tips'], static function ( $tip ) use ( $import_uid ) { return isset( $tip['uid'] ) && $import_uid === $tip['uid']; } ) );
+	bpt_test_assert( 1 === count( $match ) && 'BPT Import League' === $match[0]['league']['name'], 'Export did not preserve imported tip.' );
+	$match[0]['title'] = 'Updated imported BPT tip';
+	$again = Import_Export::import_data( array( 'tips' => array( $match[0] ) ) );
+	$imported_ids = get_posts( array( 'post_type' => 'betting_tip', 'post_status' => 'any', 'fields' => 'ids', 'meta_key' => Import_Export::UID_META, 'meta_value' => $import_uid ) );
+	bpt_test_assert( ! is_wp_error( $again ) && 1 === $again['updated'] && 1 === count( $imported_ids ) && 'Updated imported BPT tip' === get_the_title( $imported_id ), 'Repeated import should update by UID.' );
 	$_POST = array();
 	update_post_meta( $post_id, '_bpt_odds', '1.65' );
 	Settlement::settle( $post_id );
