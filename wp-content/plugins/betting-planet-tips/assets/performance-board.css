@@ -1,0 +1,86 @@
+.perf-board {
+	border: 1px solid rgba(248, 244, 230, .14);
+	border-radius: 6px;
+	overflow: hidden;
+	background: rgba(248, 244, 230, .025);
+	width: 100%;
+	max-width: 100%;
+}
+
+.perf-board-scroll {
+	max-height: 310px;
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.perf-board table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.perf-board th {
+	text-align: left;
+	font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+	font-size: 10.5px;
+	text-transform: uppercase;
+	letter-spacing: .08em;
+	color: rgba(248, 244, 230, .42);
+	padding: 12px 15px;
+	border-bottom: 1px solid rgba(248, 244, 230, .12);
+	font-weight: 500;
+	white-space: nowrap;
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	background: #102117;
+}
+
+.perf-board td {
+	padding: 13px 15px;
+	border-bottom: 1px solid rgba(248, 244, 230, .09);
+	font-size: 13.5px;
+	color: rgba(248, 244, 230, .82);
+	vertical-align: middle;
+}
+
+.perf-board tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+.perf-board .match {
+	font-weight: 600;
+	color: rgba(248, 244, 230, .92);
+	min-width: 180px;
+}
+
+.perf-board .num {
+	text-align: right;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+.perf-board .outcome {
+	font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+	font-size: 11px;
+	letter-spacing: .06em;
+	white-space: nowrap;
+}
+
+.perf-board .positive {
+	color: #7edc94;
+}
+
+.perf-board .negative {
+	color: #ff8a7a;
+}
+
+.perf-board .empty {
+	text-align: center;
+	color: rgba(248, 244, 230, .56);
+}
+
+@media (max-width: 760px) {
+	.perf-board table {
+		min-width: 720px;
+	}
+}

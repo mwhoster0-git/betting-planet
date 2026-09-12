@@ -9,7 +9,10 @@ final class Shortcodes {
 	public static function definitions() {
 		return array(
 			'bpt_open_bets' => array( 'name' => __( 'Open bets display', 'betting-planet-tips' ), 'description' => __( 'Swipeable card deck of published, valid pending tips. Use [bpt_open_bets] or [bpt_open_bets limit="10"]. Touch swipe, mouse drag, arrow keys and navigation buttons are supported.', 'betting-planet-tips' ) ),
+			'bpt_performance_board' => array( 'name' => __( 'Performance Board', 'betting-planet-tips' ), 'description' => __( 'Responsive table of published settled tips. Use [bpt_performance_board] or [bpt_performance_board limit="10"]. Pending and incomplete tips are excluded.', 'betting-planet-tips' ) ),
 			'bpt_total_tips' => array( 'name' => __( 'Total Number of Tips', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected betting tips, including pending tips.', 'betting-planet-tips' ) ),
+			'bpt_total_wins' => array( 'name' => __( 'Total Number of Won Bets', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected settled tips calculated as won.', 'betting-planet-tips' ) ),
+			'bpt_total_losses' => array( 'name' => __( 'Total Number of Lost Bets', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected settled tips calculated as lost.', 'betting-planet-tips' ) ),
 			'bpt_yield' => array( 'name' => __( 'Yield Percentage', 'betting-planet-tips' ), 'description' => __( 'Overall yield: total profit divided by total stakes × 100. Uses settled public tips; never averages individual yields.', 'betting-planet-tips' ) ),
 			'bpt_win_ratio' => array( 'name' => __( 'Win Ratio', 'betting-planet-tips' ), 'description' => __( 'Winning tips divided by settled tips × 100. Pending and incomplete tips are excluded.', 'betting-planet-tips' ) ),
 			'bpt_profit' => array( 'name' => __( 'Profit', 'betting-planet-tips' ), 'description' => __( 'Total returns minus total stakes for settled public tips, displayed in Units.', 'betting-planet-tips' ) ),
@@ -26,6 +29,9 @@ final class Shortcodes {
 		if ( 'bpt_open_bets' === $tag ) {
 			return Open_Bets::render( $attributes );
 		}
+		if ( 'bpt_performance_board' === $tag ) {
+			return Performance_Board::render( $attributes );
+		}
 		if ( ! isset( self::definitions()[ $tag ] ) ) {
 			return '';
 		}
@@ -33,6 +39,12 @@ final class Shortcodes {
 		switch ( $tag ) {
 			case 'bpt_total_tips':
 				$output = (string) $totals['tips'];
+				break;
+			case 'bpt_total_wins':
+				$output = (string) $totals['wins'];
+				break;
+			case 'bpt_total_losses':
+				$output = (string) ( $totals['settled'] - $totals['wins'] );
 				break;
 			case 'bpt_yield':
 				$output = Statistics::percentage( $totals['profit'], $totals['stakes'] );

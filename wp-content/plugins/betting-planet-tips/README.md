@@ -13,10 +13,11 @@ external endpoints, fixtures, or statistics dashboard are included.
 - `includes/class-settlement.php`: reusable calculation and persistence.
 - `includes/class-admin.php`: read-only performance and per-user/per-post validation notices.
 - `includes/class-statistics.php`: reusable settled totals and request-local caching.
-- `includes/class-shortcodes.php`: four calculation handlers and the open-bets display shortcode.
+- `includes/class-shortcodes.php`: calculation handlers and display shortcode routing.
 - `includes/class-shortcode-catalog.php`: read-only native Shortcodes taxonomy library.
 - `includes/class-import-export.php`: admin JSON export/import for moving tips between sites.
 - `includes/class-open-bets.php`, `templates/open-bets.php`, `assets/open-bets.css`, `assets/open-bets.js`: dynamic open-tip card deck based on the supplied HTML mockup.
+- `includes/class-performance-board.php`, `templates/performance-board.php`, `assets/performance-board.css`: dynamic settled-tip performance table.
 - `tests/integration.php`: CLI integration checks using the local WordPress installation; database changes roll back. Requires InnoDB tables and an administrator. Run only on local/test installations without persistent object caching or external save-hook side effects.
 
 ## Metadata contract
@@ -119,8 +120,8 @@ settled stake). Never average individual yields. 1000 staked and 1080 returned g
 
 ### Shortcodes
 
-Find all five codes under **Betting Tips → Shortcodes**. This is the native
-`bpt_shortcode` taxonomy: five built-in terms store their copyable code in protected
+Find all eight codes under **Betting Tips → Shortcodes**. This is the native
+`bpt_shortcode` taxonomy: eight built-in terms store their copyable code in protected
 `_bpt_shortcode` term meta, plus usage descriptions. The library is read-only, has no
 tip assignment box, and exposes no frontend taxonomy archive or REST endpoint.
 The plugin registers shortcode handlers independently of the library; no stored code
@@ -130,10 +131,13 @@ next admin request.
 | Shortcode | Output |
 | --- | --- |
 | `[bpt_total_tips]` | Number of published tips, including pending/incomplete tips |
+| `[bpt_total_wins]` | Number of settled published tips calculated as won |
+| `[bpt_total_losses]` | Number of settled published tips calculated as lost |
 | `[bpt_yield]` | Total profit / total stakes × 100, e.g. `8.00%` |
 | `[bpt_win_ratio]` | Wins / settled tips × 100, e.g. `45.00%` |
 | `[bpt_profit]` | Settled profit, e.g. `+7.50 Units` or `-5.00 Units` |
 | `[bpt_open_bets]` | Swipeable open-tip card deck |
+| `[bpt_performance_board]` | Settled-tip performance table |
 
 
 All aggregate figures exclude drafts, private, trashed, future, and password-protected
@@ -203,3 +207,18 @@ accessible alternative to touch gestures.
 The PHP suite covers query eligibility, escaping, limits, IDs and empty states.
 Run `node wp-content/plugins/betting-planet-tips/tests/open-bets-js.cjs` for interaction
 checks with DOM stubs, including touch/mouse events and gesture cancellation.
+
+### Performance board
+
+Use `[bpt_performance_board]` to render the settled-tip table. The default maximum is
+20 rows; `[bpt_performance_board limit="10"]` sets a different loaded-record limit
+(1-100). The board shows about five rows on screen and scrolls for additional rows. Rows are
+ordered by match date/time, newest first. Published, non-password-protected tips are
+eligible only when they have valid teams, match time, selection, stake, odds, final
+result, and a matching settled status. Pending, incomplete, draft, private, password
+protected, and inconsistent tips are excluded.
+
+The table displays date, match, tip selection, stake, odds, German result labels,
+profit, and yield. Profit and yield are recalculated through the settlement engine
+during rendering, then escaped before output. The CSS uses the supplied `.perf-board`
+structure and adds horizontal scrolling on narrow screens.

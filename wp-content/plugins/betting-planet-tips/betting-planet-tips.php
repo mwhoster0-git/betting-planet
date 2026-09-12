@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Betting Tips
  * Description: Manually managed individual betting tips with automatic settlement.
- * Version: 1.4.0
+ * Version: 1.4.2
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Text Domain: betting-planet-tips
@@ -14,7 +14,7 @@ namespace BettingPlanetTips;
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'BPT_VERSION', '1.4.0' );
+define( 'BPT_VERSION', '1.4.2' );
 define( 'BPT_URL', plugin_dir_url( __FILE__ ) );
 
 require_once __DIR__ . '/includes/class-fields.php';
@@ -26,6 +26,7 @@ require_once __DIR__ . '/includes/class-admin.php';
 require_once __DIR__ . '/includes/class-statistics.php';
 require_once __DIR__ . '/includes/class-shortcodes.php';
 require_once __DIR__ . '/includes/class-open-bets.php';
+require_once __DIR__ . '/includes/class-performance-board.php';
 require_once __DIR__ . '/includes/class-shortcode-catalog.php';
 require_once __DIR__ . '/includes/class-import-export.php';
 
