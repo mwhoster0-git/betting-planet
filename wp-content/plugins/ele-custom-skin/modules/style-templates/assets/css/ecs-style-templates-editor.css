@@ -1,0 +1,214 @@
+/* ============================================================
+   ECS Style Templates — Editor Panel UI
+   Uses Elementor CSS vars so the panel adapts to light/dark mode
+   automatically.
+   ============================================================ */
+
+/* Strip default RAW_HTML control padding */
+.ecs-st-raw .elementor-control-raw-html {
+	padding: 0;
+}
+
+/* ── Panel container ─────────────────────────────────────── */
+
+.ecs-st-panel {
+	padding: 8px 0 12px;
+	color: var(--e-a-color-txt);
+}
+
+/* ── Template select ─────────────────────────────────────── */
+
+.ecs-st-select-wrap {
+	margin-bottom: 6px;
+}
+
+/* Elementor's .elementor-control-input-wrapper already styles
+   child <select> (bg, border, radius, height) with its own vars. */
+.ecs-st-select {
+	width: 100%;
+}
+
+/* ── Action buttons ──────────────────────────────────────── */
+
+.ecs-st-actions {
+	display: flex;
+	gap: 5px;
+	margin-bottom: 10px;
+}
+
+.ecs-st-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	padding: 0 10px;
+	height: 28px;
+	background: var(--e-a-bg-hover);
+	border: 1px solid var(--e-a-border-color);
+	border-radius: 3px;
+	color: var(--e-a-color-txt);
+	font-size: 12px;
+	font-weight: 500;
+	font-family: inherit;
+	line-height: 1;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.ecs-st-btn:hover {
+	background: var(--e-a-bg-active);
+}
+
+.ecs-st-btn i {
+	font-size: 13px;
+	line-height: 1;
+}
+
+/* Apply */
+.ecs-st-btn-apply {
+	flex: 1;
+}
+
+/* Overwrite */
+.ecs-st-btn-overwrite {
+	flex: 1;
+}
+
+/* Delete — icon-only */
+.ecs-st-btn-danger {
+	padding: 0 9px;
+}
+
+/* ── Link row ────────────────────────────────────────────── */
+
+.ecs-st-link-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 0 6px;
+	border-top: 1px solid var(--e-a-border-color);
+}
+
+.ecs-st-link-label {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.ecs-st-link-label i {
+	font-size: 13px;
+}
+
+/* ── Switch — exact copy of Elementor's .elementor-control-type-switcher rules,
+      scoped to .ecs-st-link-switch ───────────────────────────────────────── */
+
+.ecs-st-link-switch {
+	background-color: var(--e-a-bg-default);
+	border-radius: 18px;
+	cursor: pointer;
+	display: inline-block;
+	height: 20px;
+	position: relative;
+	vertical-align: top;
+	margin: 0;
+}
+
+.ecs-st-link-switch .elementor-switch-input {
+	display: none;
+}
+
+.ecs-st-link-switch .elementor-switch-label {
+	background: var(--e-a-bg-active-bold);
+	border-radius: inherit;
+	display: block;
+	font-size: 10px;
+	height: inherit;
+	position: relative;
+	transition: opacity 0.15s ease-out, background;
+}
+
+.ecs-st-link-switch .elementor-switch-label::after,
+.ecs-st-link-switch .elementor-switch-label::before {
+	inset-block-start: 0;
+	line-height: 20px;
+	position: absolute;
+	text-align: center;
+	transition: inherit;
+	width: 50%;
+}
+
+.ecs-st-link-switch .elementor-switch-label::before {
+	color: var(--e-a-color-txt-muted);
+	content: attr(data-off);
+	inset-inline-end: 5px;
+}
+
+.ecs-st-link-switch .elementor-switch-label::after {
+	color: var(--e-a-btn-color);
+	content: attr(data-on);
+	inset-inline-start: 5px;
+	opacity: 0;
+}
+
+.ecs-st-link-switch .elementor-switch-input:checked ~ .elementor-switch-label {
+	background: var(--e-a-btn-bg-primary);
+}
+
+.ecs-st-link-switch .elementor-switch-input:checked ~ .elementor-switch-label::before {
+	opacity: 0;
+}
+
+.ecs-st-link-switch .elementor-switch-input:checked ~ .elementor-switch-label::after {
+	opacity: 1;
+}
+
+.ecs-st-link-switch .elementor-switch-handle {
+	background: var(--e-a-bg-invert);
+	border-radius: 10px;
+	height: 18px;
+	inset-block-start: 1px;
+	inset-inline-start: 1px;
+	position: absolute;
+	transition: inset-inline-start 0.15s ease-out;
+	width: 18px;
+}
+
+.ecs-st-link-switch .elementor-switch-input:checked ~ .elementor-switch-handle {
+	inset-inline: auto 1px;
+}
+
+/* ── Status ──────────────────────────────────────────────── */
+
+.ecs-st-status {
+	font-size: 11px;
+	color: var(--e-a-color-txt-muted);
+	min-height: 12px;
+	padding: 2px 0 6px;
+}
+
+.ecs-st-status.ecs-st-is-linked {
+	color: var(--e-a-color-txt);
+	font-weight: 600;
+}
+
+.ecs-st-status.ecs-st-is-applied {
+	color: var(--e-a-color-txt-muted);
+}
+
+/* ── Save form ───────────────────────────────────────────── */
+
+.ecs-st-save-form {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	padding-top: 10px;
+	border-top: 1px solid var(--e-a-border-color);
+}
+
+/* Save button — full width, neutral */
+.ecs-st-btn-save {
+	width: 100%;
+}

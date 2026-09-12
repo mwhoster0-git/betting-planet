@@ -1,0 +1,139 @@
+/* ============================================================
+   ECS Default Colours — Editor Panel Styles
+   ============================================================
+   Applied inside Elementor's Site Settings panel only.
+   ============================================================ */
+
+/* ── Mode selector: style the CHOOSE control as tabs ─────── */
+
+.elementor-control-ecs_view_mode {
+	margin-bottom: 12px !important;
+}
+
+.elementor-control-ecs_view_mode .elementor-control-title {
+	display: none; /* hide "Preview Mode" label — the icons speak for themselves */
+}
+
+/* Make the tab text visible (Elementor hides it in .elementor-screen-only by default) */
+.elementor-control-ecs_view_mode .elementor-screen-only {
+	position: static !important;
+	clip: unset !important;
+	white-space: normal !important;
+	width: auto !important;
+	height: auto !important;
+	overflow: visible !important;
+}
+
+.elementor-control-ecs_view_mode .elementor-control-field,
+.elementor-control-ecs_view_mode .elementor-control-input-wrapper {
+	width: 100% !important;
+}
+
+.elementor-control-ecs_view_mode .elementor-choices {
+	display: flex;
+	width: 100%;
+	border: 1px solid #d5d8dc;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.elementor-control-ecs_view_mode .elementor-choices label {
+	flex: 1;
+	width: auto !important;       /* override elementor-control-unit-1 fixed width */
+	overflow: visible !important; /* override elementor's overflow:hidden */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	padding: 7px 8px;
+	font-size: 11px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background 0.15s, color 0.15s;
+	border-right: 1px solid #d5d8dc;
+	color: #6b7685;
+	white-space: nowrap;
+}
+
+.elementor-control-ecs_view_mode .elementor-choices label:last-child {
+	border-right: none;
+}
+
+.elementor-control-ecs_view_mode .elementor-choices input:checked + label,
+.elementor-control-ecs_view_mode .elementor-choices label:has(input:checked) {
+	background: #2271b1;
+	color: #fff;
+}
+
+/* Fallback for browsers without :has() */
+.elementor-control-ecs_view_mode .elementor-choices label.elementor-active {
+	background: #2271b1;
+	color: #fff;
+}
+
+/* ── Hide per-row "Default" / "Dark Mode" labels (mode tab already shows this) */
+
+.elementor-control-system_colors .elementor-control-color .elementor-control-title,
+.elementor-control-system_colors .elementor-control-dark_color .elementor-control-title,
+.elementor-control-custom_colors .elementor-control-color .elementor-control-title,
+.elementor-control-custom_colors .elementor-control-dark_color .elementor-control-title {
+	display: none !important;
+}
+
+/* ── Show / hide colour fields based on active mode ─────── */
+
+/* Default mode: show "Default" colour, hide "Dark Mode" colour */
+/* Targets the controls-stack ancestor (controls are siblings of the section in DOM) */
+.ecs-mode-default .elementor-control-system_colors .elementor-control-dark_color,
+.ecs-mode-default .elementor-control-custom_colors .elementor-control-dark_color {
+	display: none !important;
+}
+
+/* Dark mode: show "Dark Mode" colour, hide "Default" colour */
+.ecs-mode-dark .elementor-control-system_colors .elementor-control-color,
+.ecs-mode-dark .elementor-control-custom_colors .elementor-control-color {
+	display: none !important;
+}
+
+/* ── Dark mode fallback indicator ───────────────────────── */
+
+/* Row that has no dark colour set — subtle warning outline */
+.ecs-mode-dark .ecs-dark-fallback {
+	position: relative;
+}
+
+.ecs-mode-dark .ecs-dark-fallback .elementor-control-field::before {
+	content: 'Falls back to default';
+	display: block;
+	font-size: 10px;
+	color: #b45309;
+	margin-bottom: 4px;
+	font-style: italic;
+}
+
+/* ── Dark Mode Logo: hidden by default, shown only in dark mode ── */
+
+.elementor-control-ecs_dark_logo_heading,
+.elementor-control-ecs_dark_logo {
+	display: none !important;
+}
+
+.ecs-mode-dark .elementor-control-ecs_dark_logo_heading,
+.ecs-mode-dark .elementor-control-ecs_dark_logo {
+	display: block !important;
+}
+
+/* Reference swatch showing the default colour as fallback preview */
+.ecs-fallback-swatch {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border-radius: 3px;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	vertical-align: middle;
+	margin-left: 6px;
+	flex-shrink: 0;
+	cursor: help;
+	position: relative;
+	top: -1px;
+}

@@ -1,0 +1,276 @@
+/* ── ECS Color Wheel — Pickr-integrated panel ───────────────────────────────
+   Follows JSON PowerEdit style: uses Elementor CSS vars for light/dark panel.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+	--cw-bg       : var(--e-a-bg-default,  #ffffff);
+	--cw-surface  : var(--e-a-bg-hover,    #f7f7f7);
+	--cw-text     : var(--e-a-color-txt-accent, #0c0d0e);
+	--cw-text-sec : var(--e-a-color-txt,   #515962);
+	--cw-text-ter : var(--e-a-color-txt-muted, #69727d);
+	--cw-border   : var(--e-a-border-color, #d5d8dc);
+}
+
+/* ── Panel injected at the bottom of Pickr popup ────────────────────────── */
+
+.ecs-cw-pickr-panel {
+	border-top  : 1px solid var(--cw-border);
+	background  : var(--cw-bg);
+	font-family : Roboto, Arial, Helvetica, sans-serif;
+	font-size   : 12px;
+}
+
+/* Color wheel icon — conic gradient circle */
+.ecs-cw-icon {
+	display      : inline-block;
+	width        : 12px;
+	height       : 12px;
+	border-radius: 50%;
+	background   : conic-gradient(
+		#ff0000 0deg,
+		#ffff00 60deg,
+		#00ff00 120deg,
+		#00ffff 180deg,
+		#0000ff 240deg,
+		#ff00ff 300deg,
+		#ff0000 360deg
+	);
+	flex-shrink  : 0;
+}
+
+/* Toggle button row */
+.ecs-cw-pickr-toggle {
+	display         : flex;
+	align-items     : center;
+	gap             : 5px;
+	width           : 100%;
+	padding         : 6px 10px;
+	background      : var(--cw-surface);
+	border          : none;
+	border-bottom   : 1px solid transparent;
+	color           : var(--cw-text-sec);
+	font-size       : 11px;
+	font-family     : inherit;
+	font-weight     : 500;
+	cursor          : pointer;
+	text-align      : left;
+	transition      : background .15s, color .15s;
+}
+
+.ecs-cw-pickr-toggle:hover {
+	background : var(--e-a-bg-active, #efefef);
+	color      : var(--cw-text);
+}
+
+.ecs-cw-pickr-toggle.is-open {
+	background  : var(--cw-bg);
+	color       : var(--cw-text);
+	border-bottom-color: var(--cw-border);
+}
+
+.ecs-cw-toggle-arrow {
+	margin-left : auto;
+	font-size   : 10px;
+	transition  : transform .15s;
+	line-height : 1;
+}
+
+.ecs-cw-pickr-toggle.is-open .ecs-cw-toggle-arrow {
+	transform : rotate(180deg);
+}
+
+/* Expanded content */
+.ecs-cw-pickr-content {
+	padding    : 8px 10px 10px;
+	background : var(--cw-bg);
+}
+
+.ecs-cw-pickr-content[hidden] {
+	display : none;
+}
+
+/* ── Harmony type tabs ───────────────────────────────────────────────────── */
+
+.ecs-cw-tabs {
+	display        : flex;
+	flex-wrap      : wrap;
+	gap            : 3px;
+	margin-bottom  : 8px;
+}
+
+.ecs-cw-tab {
+	flex           : 1 1 auto;
+	min-width      : 0;
+	padding        : 3px 5px;
+	background     : var(--cw-surface);
+	border         : 1px solid var(--cw-border);
+	border-radius  : 3px;
+	color          : var(--cw-text-sec);
+	font-size      : 10px;
+	font-family    : inherit;
+	cursor         : pointer;
+	text-align     : center;
+	white-space    : nowrap;
+	overflow       : hidden;
+	text-overflow  : ellipsis;
+	transition     : background .12s, color .12s, border-color .12s;
+}
+
+.ecs-cw-tab:hover {
+	background   : var(--e-a-bg-active, #efefef);
+	color        : var(--cw-text);
+}
+
+.ecs-cw-tab.is-active {
+	background   : #f0abfc;
+	border-color : #e879f9;
+	color        : #0c0d0e;
+	font-weight  : 600;
+}
+
+/* ── Swatches row ────────────────────────────────────────────────────────── */
+
+.ecs-cw-swatches {
+	display        : flex;
+	flex-wrap      : wrap;
+	gap            : 4px;
+	margin-bottom  : 8px;
+	min-height     : 26px;
+}
+
+.ecs-cw-swatch {
+	width          : 26px;
+	height         : 26px;
+	border-radius  : 3px;
+	border         : 1px solid rgba(0,0,0,.12);
+	cursor         : pointer;
+	transition     : transform .1s, box-shadow .1s;
+	flex-shrink    : 0;
+	padding        : 0;
+}
+
+.ecs-cw-swatch:hover {
+	transform  : scale(1.15);
+	box-shadow : 0 2px 6px rgba(0,0,0,.25);
+	z-index    : 1;
+}
+
+/* ── Save row ────────────────────────────────────────────────────────────── */
+
+.ecs-cw-save-row {
+	display        : flex;
+	gap            : 4px;
+	margin-bottom  : 8px;
+}
+
+.ecs-cw-palette-name {
+	flex           : 1;
+	height         : 26px;
+	padding        : 0 7px;
+	background     : var(--cw-surface);
+	border         : 1px solid var(--cw-border);
+	border-radius  : 3px;
+	color          : var(--cw-text);
+	font-size      : 11px;
+	font-family    : inherit;
+	outline        : none;
+}
+
+.ecs-cw-palette-name:focus {
+	border-color : #e879f9;
+}
+
+.ecs-cw-save-btn {
+	height         : 26px;
+	padding        : 0 9px;
+	background     : #f0abfc;
+	border         : 1px solid #e879f9;
+	border-radius  : 3px;
+	color          : #0c0d0e;
+	font-size      : 11px;
+	font-family    : inherit;
+	font-weight    : 600;
+	cursor         : pointer;
+	white-space    : nowrap;
+	transition     : background .12s;
+}
+
+.ecs-cw-save-btn:hover {
+	background : #e879f9;
+}
+
+/* ── Saved palettes ──────────────────────────────────────────────────────── */
+
+.ecs-cw-saved-title {
+	font-size      : 10px;
+	text-transform : uppercase;
+	letter-spacing : .05em;
+	color          : var(--cw-text-ter);
+	margin-bottom  : 5px;
+	font-weight    : 600;
+}
+
+.ecs-cw-saved-row {
+	display      : flex;
+	align-items  : center;
+	gap          : 5px;
+	padding      : 4px 0;
+	border-bottom: 1px solid var(--cw-border);
+}
+
+.ecs-cw-saved-row:last-child {
+	border-bottom : none;
+	padding-bottom : 0;
+}
+
+.ecs-cw-saved-name {
+	flex           : 0 0 72px;
+	font-size      : 11px;
+	color          : var(--cw-text-sec);
+	white-space    : nowrap;
+	overflow       : hidden;
+	text-overflow  : ellipsis;
+}
+
+.ecs-cw-saved-swatches {
+	display : flex;
+	gap     : 3px;
+	flex    : 1;
+}
+
+.ecs-cw-swatch--sm {
+	width          : 18px;
+	height         : 18px;
+	border-radius  : 2px;
+	border         : 1px solid rgba(0,0,0,.12);
+	cursor         : pointer;
+	padding        : 0;
+	transition     : transform .1s;
+}
+
+.ecs-cw-swatch--sm:hover {
+	transform : scale(1.2);
+}
+
+.ecs-cw-del-btn {
+	background  : transparent;
+	border      : none;
+	color       : var(--cw-text-ter);
+	font-size   : 14px;
+	line-height : 1;
+	cursor      : pointer;
+	padding     : 0 2px;
+	flex-shrink : 0;
+	transition  : color .1s;
+}
+
+.ecs-cw-del-btn:hover {
+	color : #dc2626;
+}
+
+.ecs-cw-no-saved {
+	color     : var(--cw-text-ter);
+	font-size : 11px;
+	margin    : 0;
+	font-style: italic;
+}
