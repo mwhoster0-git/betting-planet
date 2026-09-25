@@ -5,15 +5,18 @@ namespace BettingPlanetTips;
 defined( 'ABSPATH' ) || exit;
 
 final class Open_Bets {
-	public static function tips( $limit ) {
+	public static function tips( $limit, $settled = false ) {
 		$tips = array();
 		$page = 1;
 		do {
 			$query = new \WP_Query( array(
 				'post_type' => 'betting_tip', 'post_status' => 'publish', 'has_password' => false,
 				'posts_per_page' => 50, 'paged' => $page, 'no_found_rows' => true,
-				'meta_key' => '_bpt_match_datetime', 'orderby' => array( 'meta_value' => 'ASC', 'ID' => 'ASC' ),
-				'meta_query' => array(
+				'meta_key' => '_bpt_match_datetime', 'orderby' => array( 'meta_value' => $settled ? 'DESC' : 'ASC', 'ID' => $settled ? 'DESC' : 'ASC' ),
+				'meta_query' => $settled ? array(
+					array( 'key' => '_bpt_match_result', 'value' => array( '1', '0', '2' ), 'compare' => 'IN' ),
+					array( 'key' => '_bpt_bet_status', 'value' => array( 'won', 'lost' ), 'compare' => 'IN' ),
+				) : array(
 					array( 'relation' => 'OR', array( 'key' => '_bpt_match_result', 'value' => 'pending' ), array( 'key' => '_bpt_match_result', 'compare' => 'NOT EXISTS' ) ),
 					array( 'relation' => 'OR', array( 'key' => '_bpt_bet_status', 'value' => 'pending' ), array( 'key' => '_bpt_bet_status', 'compare' => 'NOT EXISTS' ) ),
 				),
@@ -25,6 +28,14 @@ final class Open_Bets {
 					if ( is_wp_error( $data[ $field ] ) || ( 'season' !== $field && '' === $data[ $field ] ) ) {
 						continue 2;
 					}
+				}
+				if ( $settled ) {
+					$data['match_result'] = get_post_meta( $post->ID, '_bpt_match_result', true );
+					$data['performance'] = Settlement::calculate( $data );
+					if ( 'pending' === $data['performance']['bet_status'] || $data['performance']['bet_status'] !== get_post_meta( $post->ID, '_bpt_bet_status', true ) ) {
+						continue;
+					}
+					$data['result_label'] = '0' === $data['match_result'] ? __( 'Draw', 'betting-planet-tips' ) : $data[ '1' === $data['match_result'] ? 'home_team' : 'away_team' ];
 				}
 				$leagues = wp_get_object_terms( $post->ID, Leagues::TAXONOMY, array( 'fields' => 'names' ) );
 				$data['league'] = ! is_wp_error( $leagues ) ? implode( ', ', $leagues ) : '';
@@ -54,6 +65,13 @@ final class Open_Bets {
 		$attributes = shortcode_atts( array( 'limit' => '20' ), $attributes, 'bpt_open_bets' );
 		$limit = is_scalar( $attributes['limit'] ) && preg_match( '/\A[1-9][0-9]{0,2}\z/', (string) $attributes['limit'] ) ? min( 100, (int) $attributes['limit'] ) : 20;
 		$tips = self::tips( $limit );
+		$settled = ! $tips;
+		if ( $settled ) {
+			$tips = self::tips( 4, true );
+		}
+		if ( ! $tips ) {
+			return '';
+		}
 		wp_enqueue_style( 'bpt-open-bets', BPT_URL . 'assets/open-bets.css', array(), BPT_VERSION );
 		wp_enqueue_script( 'bpt-open-bets', BPT_URL . 'assets/open-bets.js', array(), BPT_VERSION, true );
 		$id = wp_unique_id( 'bpt-open-bets-' );

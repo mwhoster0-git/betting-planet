@@ -681,7 +681,14 @@ pre:has([data-bpt-open-bets]), code:has([data-bpt-open-bets]) { white-space:norm
 [data-bpt-open-bets].is-dragging .bp-hand-card { transition:none; cursor:grabbing; }
 [data-bpt-open-bets]:not(.is-ready) .bp-hand-deck { height:auto; }
 [data-bpt-open-bets]:not(.is-ready) .bp-hand-card { position:relative; top:0; transform:none; margin:15px 0; cursor:auto; }
-[data-bpt-open-bets] .bp-empty { padding:24px; background:#EDE4C8; border-radius:8px; color:#123324; }
+[data-bpt-open-bets] .bp-settled-badge { background:#00664B; box-shadow:0 5px 14px rgba(0,102,75,.25); }
+[data-bpt-open-bets] .bp-settlement { color:#1B2A22; }
+[data-bpt-open-bets] .bp-settlement > strong { display:block; margin-bottom:5px; font-size:14px; }
+[data-bpt-open-bets] .bp-result-won { color:#00664B; }
+[data-bpt-open-bets] .bp-result-lost { color:#AE3626; }
+[data-bpt-open-bets] .bp-performance { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:12px; }
+[data-bpt-open-bets] .bp-performance span { display:block; margin-bottom:5px; }
+[data-bpt-open-bets] .bp-performance strong { font-size:13px; }
 @media(max-width:767px) {
  [data-bpt-open-bets].bp-hand-tips { padding:0 16px; }
  [data-bpt-open-bets] .bp-hand-card { padding:18px 14px 14px; }

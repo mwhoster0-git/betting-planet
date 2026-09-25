@@ -17,6 +17,7 @@ bpt_test_assert( false === strpos( $ob_tips[0]['analysis'], '[bpt_' ), 'Content 
 $ob_html = do_shortcode( '[bpt_open_bets limit="1"]' );
 bpt_test_assert( 1 === substr_count( $ob_html, 'class="bp-hand-card"' ) && false !== strpos( $ob_html, 'Test &amp; United' ) && false === strpos( $ob_html, '<script>' ), 'Open card escaping and limit.' );
 bpt_test_assert( false !== strpos( $ob_html, '0 · Draw' ) && false !== strpos( $ob_html, '5 Units' ) && false !== strpos( $ob_html, '2.50' ), 'Open card betting values.' );
+bpt_test_assert( false === strpos( $ob_html, 'bp-settled-badge' ), 'Open tips must take priority over settled tips.' );
 $ob_second = do_shortcode( '[bpt_open_bets limit="1"]' );
 preg_match( '/id="(bpt-open-bets-[^"]+)"/', $ob_html, $ob_first_id );
 preg_match( '/id="(bpt-open-bets-[^"]+)"/', $ob_second, $ob_second_id );
@@ -42,4 +43,25 @@ $ob_empty = static function ( $query ) {
 add_action( 'pre_get_posts', $ob_empty );
 $ob_empty_html = do_shortcode( '[bpt_open_bets]' );
 remove_action( 'pre_get_posts', $ob_empty );
-bpt_test_assert( false !== strpos( $ob_empty_html, 'No open bets' ) && false === strpos( $ob_empty_html, 'data-bpt-next' ), 'Empty state.' );
+bpt_test_assert( '' === $ob_empty_html, 'No message when neither open nor settled tips exist.' );
+
+$ob_settled_ids = array();
+foreach ( range( 1, 5 ) as $ob_day ) {
+	$ob_record = array_merge( $ob_data, array( 'match_datetime' => '2090-01-0' . $ob_day . ' 12:00:00', 'match_result' => $ob_day % 2 ? '0' : '1' ) );
+	$ob_settled_ids[] = $sc_create( $ob_record );
+}
+$ob_only_settled = static function ( $query ) use ( $ob_settled_ids ) {
+	if ( 'betting_tip' === $query->get( 'post_type' ) && '_bpt_match_datetime' === $query->get( 'meta_key' ) ) {
+		$query->set( 'post__in', $ob_settled_ids );
+	}
+};
+add_action( 'pre_get_posts', $ob_only_settled );
+$ob_fallback = do_shortcode( '[bpt_open_bets limit="1"]' );
+$ob_recent = Open_Bets::tips( 4, true );
+remove_action( 'pre_get_posts', $ob_only_settled );
+bpt_test_assert( 4 === substr_count( $ob_fallback, 'class="bp-hand-card"' ) && 4 === substr_count( $ob_fallback, 'bp-settled-badge' ), 'Fallback must show four settled cards regardless of open limit.' );
+bpt_test_assert( '2090-01-05 12:00:00' === $ob_recent[0]['match_datetime'] && '2090-01-02 12:00:00' === $ob_recent[3]['match_datetime'], 'Settled fallback newest match first.' );
+bpt_test_assert( false !== strpos( $ob_fallback, '+7.50 Units' ) && false !== strpos( $ob_fallback, '-5.00 Units' ) && false !== strpos( $ob_fallback, '+150.00%' ) && false !== strpos( $ob_fallback, '-100.00%' ), 'Won and lost fallback performance.' );
+foreach ( $ob_settled_ids as $ob_cleanup_id ) {
+	wp_delete_post( $ob_cleanup_id, true );
+}
