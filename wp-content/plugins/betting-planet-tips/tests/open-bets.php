@@ -16,7 +16,7 @@ bpt_test_assert( 'Draw' === $ob_tips[0]['selection_label'] && 'La Liga' === $ob_
 bpt_test_assert( false === strpos( $ob_tips[0]['analysis'], '[bpt_' ), 'Content shortcodes must not execute inside analysis.' );
 $ob_html = do_shortcode( '[bpt_open_bets limit="1"]' );
 bpt_test_assert( 1 === substr_count( $ob_html, 'class="bp-hand-card"' ) && false !== strpos( $ob_html, 'Test &amp; United' ) && false === strpos( $ob_html, '<script>' ), 'Open card escaping and limit.' );
-bpt_test_assert( false !== strpos( $ob_html, '0 · Draw' ) && false !== strpos( $ob_html, '5 Units' ) && false !== strpos( $ob_html, '2.50' ), 'Open card betting values.' );
+bpt_test_assert( false !== strpos( $ob_html, 'X · Draw' ) && false !== strpos( $ob_html, '5 Units' ) && false !== strpos( $ob_html, '2.50' ), 'Open card betting values.' );
 bpt_test_assert( false === strpos( $ob_html, 'bp-settled-badge' ), 'Open tips must take priority over settled tips.' );
 $ob_second = do_shortcode( '[bpt_open_bets limit="1"]' );
 preg_match( '/id="(bpt-open-bets-[^"]+)"/', $ob_html, $ob_first_id );

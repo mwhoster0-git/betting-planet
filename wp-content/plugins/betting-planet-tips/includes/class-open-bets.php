@@ -14,8 +14,8 @@ final class Open_Bets {
 				'posts_per_page' => 50, 'paged' => $page, 'no_found_rows' => true,
 				'meta_key' => '_bpt_match_datetime', 'orderby' => array( 'meta_value' => $settled ? 'DESC' : 'ASC', 'ID' => $settled ? 'DESC' : 'ASC' ),
 				'meta_query' => $settled ? array(
-					array( 'key' => '_bpt_match_result', 'value' => array( '1', '0', '2' ), 'compare' => 'IN' ),
-					array( 'key' => '_bpt_bet_status', 'value' => array( 'won', 'lost' ), 'compare' => 'IN' ),
+					array( 'key' => '_bpt_match_result', 'value' => array( '1', '0', '2', 'void' ), 'compare' => 'IN' ),
+					array( 'key' => '_bpt_bet_status', 'value' => array( 'won', 'lost', 'void' ), 'compare' => 'IN' ),
 				) : array(
 					array( 'relation' => 'OR', array( 'key' => '_bpt_match_result', 'value' => 'pending' ), array( 'key' => '_bpt_match_result', 'compare' => 'NOT EXISTS' ) ),
 					array( 'relation' => 'OR', array( 'key' => '_bpt_bet_status', 'value' => 'pending' ), array( 'key' => '_bpt_bet_status', 'compare' => 'NOT EXISTS' ) ),
@@ -36,6 +36,9 @@ final class Open_Bets {
 						continue;
 					}
 					$data['result_label'] = '0' === $data['match_result'] ? __( 'Draw', 'betting-planet-tips' ) : $data[ '1' === $data['match_result'] ? 'home_team' : 'away_team' ];
+					if ( 'void' === $data['match_result'] ) {
+						$data['result_label'] = __( 'Cancelled — stake returned', 'betting-planet-tips' );
+					}
 				}
 				$leagues = wp_get_object_terms( $post->ID, Leagues::TAXONOMY, array( 'fields' => 'names' ) );
 				$data['league'] = ! is_wp_error( $leagues ) ? implode( ', ', $leagues ) : '';

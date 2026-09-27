@@ -14,8 +14,8 @@ final class Performance_Board {
 				'posts_per_page' => 50, 'paged' => $page, 'no_found_rows' => true,
 				'meta_key' => '_bpt_match_datetime', 'orderby' => array( 'meta_value' => 'DESC', 'ID' => 'DESC' ),
 				'meta_query' => array(
-					array( 'key' => '_bpt_match_result', 'value' => array( '1', '0', '2' ), 'compare' => 'IN' ),
-					array( 'key' => '_bpt_bet_status', 'value' => array( 'won', 'lost' ), 'compare' => 'IN' ),
+					array( 'key' => '_bpt_match_result', 'value' => array( '1', '0', '2', 'void' ), 'compare' => 'IN' ),
+					array( 'key' => '_bpt_bet_status', 'value' => array( 'won', 'lost', 'void' ), 'compare' => 'IN' ),
 				),
 			) );
 			foreach ( $query->posts as $post ) {
@@ -68,7 +68,7 @@ final class Performance_Board {
 	}
 
 	public static function signed_amount( $value, $suffix ) {
-		$prefix = '-' !== substr( $value, 0, 1 ) && '0.00' !== $value ? '+' : '';
+		$prefix = '-' !== substr( $value, 0, 1 ) && '0.00' !== $value && '0' !== $value ? '+' : '';
 		return $prefix . $value . $suffix;
 	}
 

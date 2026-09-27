@@ -29,7 +29,7 @@ $sc_win = array( 'stake' => '1', 'odds' => '3.00', 'bet_selection' => '1', 'matc
 $sc_loss = array( 'stake' => '9', 'odds' => '2.00', 'bet_selection' => '1', 'match_result' => '0', 'bet_status' => 'lost' );
 $sc_pending = array_merge( $sc_win, array( 'match_result' => 'pending', 'bet_status' => 'pending' ) );
 $sc_summary = Statistics::summarize( array( $sc_win, $sc_loss, $sc_pending ) );
-bpt_test_assert( array( 'tips' => 3, 'settled' => 2, 'wins' => 1, 'stakes' => 1000, 'returns' => 300, 'profit' => -700 ) === $sc_summary, 'Integer totals/settled-only accounting.' );
+bpt_test_assert( array( 'tips' => 3, 'settled' => 2, 'wins' => 1, 'stakes' => 1000, 'returns' => 300, 'profit' => -700, 'void' => 0 ) === $sc_summary, 'Integer totals/settled-only accounting.' );
 bpt_test_assert( '-70.00%' === Statistics::percentage( $sc_summary['profit'], $sc_summary['stakes'] ), 'Yield must be weighted by stakes, not average individual yields (50%).' );
 bpt_test_assert( '50.00%' === Statistics::percentage( $sc_summary['wins'], $sc_summary['settled'] ), 'Win ratio must exclude pending tips.' );
 bpt_test_assert( '8.00%' === Statistics::percentage( 8000, 100000 ), '1000 staked, 1080 returned must yield 8%.' );
@@ -59,7 +59,7 @@ $sc_password_id = $sc_create( $sc_win, 'publish', 'testing-password' );
 $sc_totals = Statistics::totals();
 bpt_test_assert( $sc_base['tips'] + 3 === $sc_totals['tips'] && $sc_base['settled'] + 2 === $sc_totals['settled'], 'Public query included hidden tips or dropped pending tips.' );
 bpt_test_assert( $sc_base['profit'] - 700 === $sc_totals['profit'] && $sc_base['stakes'] + 1000 === $sc_totals['stakes'], 'Published query totals.' );
-bpt_test_assert( (string) ( $sc_base['settled'] + 2 ) === do_shortcode( '[bpt_total_tips]' ), 'Total shortcode must count wins and losses while excluding pending and hidden tips.' );
+bpt_test_assert( (string) ( $sc_base['settled'] + $sc_base['void'] + 2 ) === do_shortcode( '[bpt_total_tips]' ), 'Total shortcode must count completed tips while excluding pending and hidden tips.' );
 $sc_total_term = get_term_by( 'slug', 'bpt-total-tips', Shortcode_Catalog::TAXONOMY );
 bpt_test_assert( 'Number of published, non-password-protected betting tips, excluding pending tips.' === $sc_total_term->description, 'Total tips catalog description must be updated.' );
 bpt_test_assert( (string) $sc_totals['wins'] === do_shortcode( '[bpt_total_wins]' ), 'Total wins shortcode.' );

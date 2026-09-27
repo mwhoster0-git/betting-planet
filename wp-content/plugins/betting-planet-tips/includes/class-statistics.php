@@ -48,12 +48,17 @@ final class Statistics {
 
 	/** Sum integer hundredths; percentages are calculated only after summation. */
 	public static function summarize( iterable $records ) {
-		$totals = array( 'tips' => 0, 'settled' => 0, 'wins' => 0, 'stakes' => 0, 'returns' => 0, 'profit' => 0 );
+		$totals = array( 'tips' => 0, 'settled' => 0, 'wins' => 0, 'stakes' => 0, 'returns' => 0, 'profit' => 0, 'void' => 0 );
 		foreach ( $records as $record ) {
 			++$totals['tips'];
 			$settled = Settlement::calculate( $record );
 			// Exclude incomplete/pending inputs and inconsistent/unsettled stored statuses.
 			if ( 'pending' === $settled['bet_status'] || ( $record['bet_status'] ?? '' ) !== $settled['bet_status'] ) {
+				continue;
+			}
+			// Refunded bets count as completed tips but never dilute performance denominators.
+			if ( 'void' === $settled['bet_status'] ) {
+				++$totals['void'];
 				continue;
 			}
 			++$totals['settled'];

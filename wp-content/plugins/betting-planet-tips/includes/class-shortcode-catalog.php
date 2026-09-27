@@ -33,7 +33,7 @@ final class Shortcode_Catalog {
 	}
 
 	public static function install() {
-		if ( '6' === get_option( 'bpt_shortcode_catalog_version' ) ) {
+		if ( '7' === get_option( 'bpt_shortcode_catalog_version' ) ) {
 			return;
 		}
 		// Remove the retired built-in entries when upgrading an existing installation.
@@ -67,7 +67,7 @@ final class Shortcode_Catalog {
 				return;
 			}
 		}
-		update_option( 'bpt_shortcode_catalog_version', '6', false );
+		update_option( 'bpt_shortcode_catalog_version', '7', false );
 	}
 
 	public static function columns( $columns ) {

@@ -24,7 +24,7 @@ final class Fields {
 			'bet_selection'  => array( 'label' => __( 'Bet Selection', 'betting-planet-tips' ), 'group' => 'bet', 'type' => 'select', 'choices' => self::selections() ),
 			'stake'          => array( 'label' => __( 'Stake', 'betting-planet-tips' ), 'group' => 'bet', 'type' => 'select', 'choices' => array_combine( range( 1, 10 ), range( 1, 10 ) ) ),
 			'odds'           => array( 'label' => __( 'Odds', 'betting-planet-tips' ), 'group' => 'bet', 'type' => 'number' ),
-			'match_result'   => array( 'label' => __( 'Match Result', 'betting-planet-tips' ), 'group' => 'result', 'type' => 'select', 'choices' => array( 'pending' => __( 'Pending', 'betting-planet-tips' ) ) + self::selections() ),
+			'match_result'   => array( 'label' => __( 'Match Result', 'betting-planet-tips' ), 'group' => 'result', 'type' => 'select', 'choices' => array( 'pending' => __( 'Pending', 'betting-planet-tips' ) ) + self::selections() + array( 'void' => __( 'Void', 'betting-planet-tips' ) ) ),
 		);
 	}
 
@@ -70,7 +70,7 @@ final class Fields {
 				return Settlement::decimal( $cents );
 			case 'bet_selection':
 			case 'match_result':
-				$allowed = 'match_result' === $field ? array( 'pending', '1', '0', '2' ) : array( '1', '0', '2' );
+				$allowed = 'match_result' === $field ? array( 'pending', '1', '0', '2', 'void' ) : array( '1', '0', '2' );
 				if ( ! in_array( $value, $allowed, true ) ) {
 					return new \WP_Error( 'bpt_selection', __( 'Choose a valid match outcome.', 'betting-planet-tips' ) );
 				}

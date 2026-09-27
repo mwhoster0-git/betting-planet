@@ -1,6 +1,7 @@
 <?php
 /** @var array<int,array<string,string>> $rows */
 defined( 'ABSPATH' ) || exit;
+$status_labels = array( 'won' => __( 'GEWONNEN', 'betting-planet-tips' ), 'lost' => __( 'VERLOREN', 'betting-planet-tips' ), 'void' => __( 'VOID', 'betting-planet-tips' ) );
 ?>
 <div class="perf-board" data-bpt-performance-board>
 	<div class="perf-board-scroll">
@@ -20,16 +21,16 @@ defined( 'ABSPATH' ) || exit;
 			<tbody>
 				<?php if ( $rows ) : ?>
 					<?php foreach ( $rows as $row ) : ?>
-						<?php $positive = 'won' === $row['status']; ?>
+						<?php $tone = 'void' === $row['status'] ? 'neutral' : ( 'won' === $row['status'] ? 'positive' : 'negative' ); ?>
 						<tr>
 							<td><?php echo esc_html( $row['date'] ); ?></td>
 							<td class="match"><?php echo esc_html( $row['match'] ); ?></td>
-							<td><?php echo esc_html( $row['selection'] ); ?></td>
+							<td><?php echo esc_html( '0' === $row['selection'] ? 'X' : $row['selection'] ); ?></td>
 							<td class="num"><?php echo esc_html( $row['stake'] ); ?> U</td>
 							<td class="num"><?php echo esc_html( $row['odds'] ); ?></td>
-							<td class="outcome"><?php echo esc_html( $positive ? __( 'GEWONNEN', 'betting-planet-tips' ) : __( 'VERLOREN', 'betting-planet-tips' ) ); ?></td>
-							<td class="num <?php echo esc_attr( $positive ? 'positive' : 'negative' ); ?>"><?php echo esc_html( \BettingPlanetTips\Performance_Board::signed_amount( $row['profit'], ' U' ) ); ?></td>
-							<td class="num <?php echo esc_attr( $positive ? 'positive' : 'negative' ); ?>"><?php echo esc_html( \BettingPlanetTips\Performance_Board::compact_percent( $row['yield'] ) ); ?></td>
+							<td class="outcome"><?php echo esc_html( $status_labels[ $row['status'] ] ); ?></td>
+							<td class="num <?php echo esc_attr( $tone ); ?>"><?php echo esc_html( \BettingPlanetTips\Performance_Board::signed_amount( $row['profit'], ' U' ) ); ?></td>
+							<td class="num <?php echo esc_attr( $tone ); ?>"><?php echo esc_html( \BettingPlanetTips\Performance_Board::compact_percent( $row['yield'] ) ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 				<?php else : ?>

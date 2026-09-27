@@ -25,6 +25,9 @@ final class Settlement {
 			return $pending;
 		}
 		$stake = (int) $data['stake'];
+		if ( 'void' === $data['match_result'] ) {
+			return array( 'bet_status' => 'void', 'return' => self::decimal( $stake * 100 ), 'profit' => '0.00', 'yield' => '0.00' );
+		}
 		if ( $data['bet_selection'] !== $data['match_result'] ) {
 			return array( 'bet_status' => 'lost', 'return' => '0.00', 'profit' => self::decimal( -$stake * 100 ), 'yield' => '-100.00' );
 		}

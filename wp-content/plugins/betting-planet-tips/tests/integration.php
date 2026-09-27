@@ -120,6 +120,13 @@ try {
 	wp_set_current_user( $admins[0]->ID );
 	Meta_Boxes::save( $post_id, get_post( $post_id ) );
 	bpt_test_assert( 'lost' === get_post_meta( $post_id, '_bpt_bet_status', true ), 'Result correction failed.' );
+	$_POST['bpt']['match_result'] = 'void';
+	Meta_Boxes::save( $post_id, get_post( $post_id ) );
+	bpt_test_assert( 'void' === get_post_meta( $post_id, '_bpt_bet_status', true ) && '5.00' === get_post_meta( $post_id, '_bpt_return', true ) && '0.00' === get_post_meta( $post_id, '_bpt_profit', true ) && '0.00' === get_post_meta( $post_id, '_bpt_yield', true ), 'Void save must refund stake with zero profit/yield.' );
+	ob_start();
+	Admin::performance( get_post( $post_id ) );
+	$void_html = ob_get_clean();
+	bpt_test_assert( false !== strpos( $void_html, '>Void<' ), 'Admin must display Void status.' );
 	$_POST['bpt']['match_result'] = 'pending';
 	Meta_Boxes::save( $post_id, get_post( $post_id ) );
 	bpt_test_assert( 'pending' === get_post_meta( $post_id, '_bpt_bet_status', true ), 'Reopening a result failed.' );
@@ -215,6 +222,7 @@ try {
 	update_post_meta( $post_id, '_bpt_odds', '1.65' );
 	Settlement::settle( $post_id );
 	require __DIR__ . '/shortcodes.php';
+	require __DIR__ . '/void.php';
 	define( 'DOING_AUTOSAVE', true );
 	update_post_meta( $post_id, '_bpt_odds', '2.50' );
 	Meta_Boxes::save( $post_id, get_post( $post_id ) );

@@ -36,7 +36,7 @@ final class Admin {
 
 	public static function performance( $post ) {
 		$status = get_post_meta( $post->ID, '_bpt_bet_status', true );
-		$labels = array( 'pending' => __( 'Pending', 'betting-planet-tips' ), 'won' => __( 'Won', 'betting-planet-tips' ), 'lost' => __( 'Lost', 'betting-planet-tips' ) );
+		$labels = array( 'pending' => __( 'Pending', 'betting-planet-tips' ), 'won' => __( 'Won', 'betting-planet-tips' ), 'lost' => __( 'Lost', 'betting-planet-tips' ), 'void' => __( 'Void', 'betting-planet-tips' ) );
 		if ( ! isset( $labels[ $status ] ) ) {
 			$status = 'pending';
 		}

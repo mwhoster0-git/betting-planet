@@ -13,8 +13,8 @@ final class Shortcodes {
 			'bpt_total_tips' => array( 'name' => __( 'Total Number of Tips', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected betting tips, excluding pending tips.', 'betting-planet-tips' ) ),
 			'bpt_total_wins' => array( 'name' => __( 'Total Number of Won Bets', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected settled tips calculated as won.', 'betting-planet-tips' ) ),
 			'bpt_total_losses' => array( 'name' => __( 'Total Number of Lost Bets', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected settled tips calculated as lost.', 'betting-planet-tips' ) ),
-			'bpt_yield' => array( 'name' => __( 'Yield Percentage', 'betting-planet-tips' ), 'description' => __( 'Overall yield: total profit divided by total stakes × 100. Uses settled public tips; never averages individual yields.', 'betting-planet-tips' ) ),
-			'bpt_win_ratio' => array( 'name' => __( 'Win Ratio', 'betting-planet-tips' ), 'description' => __( 'Winning tips divided by settled tips × 100. Pending and incomplete tips are excluded.', 'betting-planet-tips' ) ),
+			'bpt_yield' => array( 'name' => __( 'Yield Percentage', 'betting-planet-tips' ), 'description' => __( 'Overall yield: total profit divided by total stakes × 100. Uses won/lost public tips, excluding void stakes and refunds; never averages individual yields.', 'betting-planet-tips' ) ),
+			'bpt_win_ratio' => array( 'name' => __( 'Win Ratio', 'betting-planet-tips' ), 'description' => __( 'Winning tips divided by won/lost tips × 100. Pending, incomplete and void tips are excluded.', 'betting-planet-tips' ) ),
 			'bpt_profit' => array( 'name' => __( 'Profit', 'betting-planet-tips' ), 'description' => __( 'Total returns minus total stakes for settled public tips, displayed in Units.', 'betting-planet-tips' ) ),
 		);
 	}
@@ -38,7 +38,7 @@ final class Shortcodes {
 		$totals = Statistics::totals();
 		switch ( $tag ) {
 			case 'bpt_total_tips':
-				$output = (string) $totals['settled'];
+				$output = (string) ( $totals['settled'] + $totals['void'] );
 				break;
 			case 'bpt_total_wins':
 				$output = (string) $totals['wins'];

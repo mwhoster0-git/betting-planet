@@ -33,8 +33,8 @@ All keys are single-value strings, not exposed in REST.
 | `_bpt_bet_selection` | `1`, `0`, `2` |
 | `_bpt_stake` | Integer string `1`–`10` |
 | `_bpt_odds` | Fixed two-decimal string, greater than `1.00`, maximum `100000.00` |
-| `_bpt_match_result` | `pending`, `1`, `0`, `2` |
-| `_bpt_bet_status` | Computed `pending`, `won`, `lost` |
+| `_bpt_match_result` | `pending`, `1`, `0`, `2`, `void` |
+| `_bpt_bet_status` | Computed `pending`, `won`, `lost`, `void` |
 | `_bpt_return` | Computed two-decimal units; absent while pending/incomplete |
 | `_bpt_profit` | Computed signed two-decimal units; absent while pending/incomplete |
 | `_bpt_yield` | Computed signed two-decimal percentage; absent while pending/incomplete |
@@ -107,6 +107,8 @@ floating-point rounding. Whole-unit stakes and two-decimal odds need no rounding
 
 - Win: return = stake × odds; profit = return − stake; yield = profit ÷ stake × 100.
 - Loss: return = 0.00; profit = −stake; yield = −100.00%.
+- Void: return = stake; profit = 0.00; yield = 0.00%. A 5 Unit void bet returns 5.00 Units. Void requires the same valid betting inputs and can be corrected or reopened using the normal save process. Import/export preserves this result and recalculates its refund.
+- Void bets appear as completed tips in the card fallback and performance table. They count in total tips, but not wins, losses, win ratio, or aggregate stakes/returns used for yield. Refunds therefore cannot dilute overall yield. Internally, `settled` in statistics counts won/lost tips, and `void` tracks cancelled tips separately.
 - 5 Units at 2.50, selection/result 1: won; return 12.50, profit +7.50, yield +150.00%.
 - 5 Units, selection 1/result 2: lost; return 0.00, profit −5.00, yield −100.00%.
 - 5 Units at 1.65, winning: return 8.25, profit +3.25, yield +65.00%.
@@ -130,7 +132,7 @@ next admin request.
 
 | Shortcode | Output |
 | --- | --- |
-| `[bpt_total_tips]` | Number of published tips, including pending/incomplete tips |
+| `[bpt_total_tips]` | Number of completed public tips (won/lost/void), excluding pending/incomplete tips |
 | `[bpt_total_wins]` | Number of settled published tips calculated as won |
 | `[bpt_total_losses]` | Number of settled published tips calculated as lost |
 | `[bpt_yield]` | Total profit / total stakes × 100, e.g. `8.00%` |
@@ -143,7 +145,7 @@ next admin request.
 All aggregate figures exclude drafts, private, trashed, future, and password-protected
 tips. Performance uses only valid settled inputs with a matching stored won/lost
 status; return/profit are derived through the settlement engine, without writing data
-during rendering. Pending/incomplete/inconsistent tips count toward total tips only.
+during rendering. Pending/incomplete/inconsistent tips are excluded from total tips. Void tips count toward total tips but have no effect on performance figures.
 There is no averaging of individual yields. With no settled bets, percentages display
 `0.00%` as a UI convention and profit displays `0.00 Units`.
 
