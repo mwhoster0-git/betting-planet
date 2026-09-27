@@ -33,7 +33,7 @@ final class Shortcode_Catalog {
 	}
 
 	public static function install() {
-		if ( '5' === get_option( 'bpt_shortcode_catalog_version' ) ) {
+		if ( '6' === get_option( 'bpt_shortcode_catalog_version' ) ) {
 			return;
 		}
 		// Remove the retired built-in entries when upgrading an existing installation.
@@ -57,13 +57,17 @@ final class Shortcode_Catalog {
 				$term_id = $created['term_id'];
 			} else {
 				$term_id = $term->term_id;
+				$updated = wp_update_term( $term_id, self::TAXONOMY, array( 'description' => $definition['description'] ) );
+				if ( is_wp_error( $updated ) ) {
+					return;
+				}
 			}
 			update_term_meta( $term_id, '_bpt_shortcode', '[' . $tag . ']' );
 			if ( '[' . $tag . ']' !== get_term_meta( $term_id, '_bpt_shortcode', true ) ) {
 				return;
 			}
 		}
-		update_option( 'bpt_shortcode_catalog_version', '5', false );
+		update_option( 'bpt_shortcode_catalog_version', '6', false );
 	}
 
 	public static function columns( $columns ) {
