@@ -79,6 +79,59 @@
 	color: rgba(248, 244, 230, .56);
 }
 
+.perf-board .bpt-match-analysis summary {
+	cursor: pointer;
+	font: inherit;
+	color: inherit;
+	text-underline-offset: 4px;
+}
+.perf-board .bpt-match-analysis summary:hover,
+.perf-board .bpt-match-analysis[open] summary { color: #E8A92B; text-decoration: underline; }
+.perf-board .bpt-analysis-panel {
+	position: relative;
+	box-sizing: border-box;
+	width: min(340px, 65vw);
+	margin-top: 12px;
+	padding: 16px;
+	border: 1px solid rgba(248,244,230,.2);
+	border-radius: 6px;
+	background: #064A37;
+	color: #F8F4E6;
+	box-shadow: 0 6px 18px rgba(0,0,0,.18);
+	font-family: "IBM Plex Sans", sans-serif;
+	font-weight: 400;
+	white-space: normal;
+}
+.perf-board .bpt-analysis-heading {
+	display: block;
+	padding-right: 32px;
+	font-family: "IBM Plex Mono", monospace;
+	font-size: 11px;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	color: #E8A92B;
+}
+.perf-board .bpt-analysis-panel p { margin: 12px 0 0; font-size: 13px; line-height: 1.6; white-space: pre-line; overflow-wrap: anywhere; }
+.perf-board .bpt-analysis-close {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	display: grid;
+	place-items: center;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	border: 0;
+	border-radius: 4px;
+	background: transparent;
+	color: #F8F4E6;
+	font: 24px/1 sans-serif;
+	cursor: pointer;
+}
+.perf-board .bpt-analysis-close:hover { background: rgba(248,244,230,.12); }
+.perf-board .bpt-analysis-close:focus-visible,
+.perf-board .bpt-match-analysis summary:focus-visible { outline: 2px solid #E8A92B; outline-offset: 3px; }
+
 @media (max-width: 760px) {
 	.perf-board table {
 		min-width: 720px;

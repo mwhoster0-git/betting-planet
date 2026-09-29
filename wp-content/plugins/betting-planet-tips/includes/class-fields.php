@@ -24,7 +24,7 @@ final class Fields {
 			'bet_selection'  => array( 'label' => __( 'Bet Selection', 'betting-planet-tips' ), 'group' => 'bet', 'type' => 'select', 'choices' => self::selections() ),
 			'stake'          => array( 'label' => __( 'Stake', 'betting-planet-tips' ), 'group' => 'bet', 'type' => 'select', 'choices' => array_combine( range( 1, 10 ), range( 1, 10 ) ) ),
 			'odds'           => array( 'label' => __( 'Odds', 'betting-planet-tips' ), 'group' => 'bet', 'type' => 'number' ),
-			'match_result'   => array( 'label' => __( 'Match Result', 'betting-planet-tips' ), 'group' => 'result', 'type' => 'select', 'choices' => array( 'pending' => __( 'Pending', 'betting-planet-tips' ) ) + self::selections() + array( 'void' => __( 'Void', 'betting-planet-tips' ) ) ),
+			'match_result'   => array( 'label' => __( 'Match Result', 'betting-planet-tips' ), 'group' => 'result', 'type' => 'select', 'choices' => array( 'pending' => __( 'Pending', 'betting-planet-tips' ) ) + self::selections() + array( 'void' => __( 'Storno', 'betting-planet-tips' ) ) ),
 		);
 	}
 

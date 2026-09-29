@@ -1,7 +1,7 @@
 <?php
 /** @package BettingPlanetTips */
 defined( 'ABSPATH' ) || exit;
-$status_labels = array( 'won' => __( 'Won', 'betting-planet-tips' ), 'lost' => __( 'Lost', 'betting-planet-tips' ), 'void' => __( 'Void', 'betting-planet-tips' ) );
+$status_labels = array( 'won' => __( 'Won', 'betting-planet-tips' ), 'lost' => __( 'Lost', 'betting-planet-tips' ), 'void' => __( 'Storno', 'betting-planet-tips' ) );
 ?>
 <section class="bp-hand-tips" data-bpt-open-bets aria-label="<?php echo esc_attr( $settled ? __( 'Settled betting tips', 'betting-planet-tips' ) : __( 'Open betting tips', 'betting-planet-tips' ) ); ?>">
 	<div class="bp-hand-deck" id="<?php echo esc_attr( $id ); ?>" tabindex="0" role="region" aria-roledescription="<?php esc_attr_e( 'carousel', 'betting-planet-tips' ); ?>" aria-label="<?php esc_attr_e( 'Tips. Swipe or use the left and right arrow keys to browse.', 'betting-planet-tips' ); ?>">
@@ -25,7 +25,7 @@ $status_labels = array( 'won' => __( 'Won', 'betting-planet-tips' ), 'lost' => _
 			<?php if ( $settled ) : ?>
 			<div class="bp-card-note bp-settlement">
 				<strong class="bp-result-<?php echo esc_attr( $tip['performance']['bet_status'] ); ?>"><?php echo esc_html( $status_labels[ $tip['performance']['bet_status'] ] ); ?></strong>
-				<span><?php echo esc_html( __( 'Match result', 'betting-planet-tips' ) . ': ' . ( '0' === $tip['match_result'] ? 'X' : $tip['match_result'] ) . ' · ' . $tip['result_label'] ); ?></span>
+				<span><?php echo esc_html( __( 'Match result', 'betting-planet-tips' ) . ': ' . ( 'void' === $tip['match_result'] ? $status_labels['void'] : ( '0' === $tip['match_result'] ? 'X' : $tip['match_result'] ) ) . ' · ' . $tip['result_label'] ); ?></span>
 				<div class="bp-performance">
 					<?php foreach ( array( 'return' => __( 'Return', 'betting-planet-tips' ), 'profit' => __( 'Profit', 'betting-planet-tips' ), 'yield' => __( 'Yield', 'betting-planet-tips' ) ) as $field => $label ) : ?>
 					<div><span><?php echo esc_html( $label ); ?></span><strong><?php echo esc_html( ( 'return' !== $field && (float) $tip['performance'][ $field ] > 0 ? '+' : '' ) . $tip['performance'][ $field ] . ( 'yield' === $field ? '%' : ' ' . __( 'Units', 'betting-planet-tips' ) ) ); ?></strong></div>

@@ -38,6 +38,7 @@ final class Performance_Board {
 				$rows[] = array(
 					'date' => wp_date( 'd.m.', $date->getTimestamp(), wp_timezone() ),
 					'match' => $record['home_team'] . ' - ' . $record['away_team'],
+					'analysis' => trim( wp_strip_all_tags( strip_shortcodes( $post->post_content ) ) ),
 					'selection' => $record['bet_selection'],
 					'stake' => $record['stake'],
 					'odds' => $record['odds'],
@@ -59,6 +60,7 @@ final class Performance_Board {
 		$limit = is_scalar( $attributes['limit'] ) && preg_match( '/\A[1-9][0-9]{0,2}\z/', (string) $attributes['limit'] ) ? min( 100, (int) $attributes['limit'] ) : 20;
 		$rows = self::rows( $limit );
 		wp_enqueue_style( 'bpt-performance-board', BPT_URL . 'assets/performance-board.css', array(), BPT_VERSION );
+		wp_enqueue_script( 'bpt-performance-board', BPT_URL . 'assets/performance-board.js', array(), BPT_VERSION, true );
 		ob_start();
 		if ( did_action( 'wp_head' ) && ! wp_style_is( 'bpt-performance-board', 'done' ) ) {
 			wp_print_styles( 'bpt-performance-board' );

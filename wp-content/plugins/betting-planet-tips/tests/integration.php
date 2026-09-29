@@ -126,7 +126,7 @@ try {
 	ob_start();
 	Admin::performance( get_post( $post_id ) );
 	$void_html = ob_get_clean();
-	bpt_test_assert( false !== strpos( $void_html, '>Void<' ), 'Admin must display Void status.' );
+	bpt_test_assert( false !== strpos( $void_html, '>Storno<' ), 'Admin must display Void status.' );
 	$_POST['bpt']['match_result'] = 'pending';
 	Meta_Boxes::save( $post_id, get_post( $post_id ) );
 	bpt_test_assert( 'pending' === get_post_meta( $post_id, '_bpt_bet_status', true ), 'Reopening a result failed.' );
