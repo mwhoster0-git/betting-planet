@@ -12,13 +12,13 @@ Shortcodes::register();
 Shortcode_Catalog::register();
 Shortcode_Catalog::install();
 $sc_terms = get_terms( array( 'taxonomy' => Shortcode_Catalog::TAXONOMY, 'hide_empty' => false ) );
-bpt_test_assert( ! is_wp_error( $sc_terms ) && 8 === count( $sc_terms ), 'Eight shortcode catalog terms required.' );
+bpt_test_assert( ! is_wp_error( $sc_terms ) && 10 === count( $sc_terms ), 'Ten shortcode catalog terms required.' );
 foreach ( $sc_terms as $sc_term ) {
 	$sc_code = get_term_meta( $sc_term->term_id, '_bpt_shortcode', true );
 	bpt_test_assert( shortcode_exists( trim( $sc_code, '[]' ) ), 'Catalog code is not registered.' );
 }
 Shortcode_Catalog::install();
-bpt_test_assert( 8 === count( get_terms( array( 'taxonomy' => Shortcode_Catalog::TAXONOMY, 'hide_empty' => false ) ) ), 'Catalog initialization duplicated terms.' );
+bpt_test_assert( 10 === count( get_terms( array( 'taxonomy' => Shortcode_Catalog::TAXONOMY, 'hide_empty' => false ) ) ), 'Catalog initialization duplicated terms.' );
 $sc_tax = get_taxonomy( Shortcode_Catalog::TAXONOMY );
 bpt_test_assert( ! $sc_tax->public && ! $sc_tax->show_in_rest && false === $sc_tax->meta_box_cb, 'Catalog exposure.' );
 bpt_test_assert( current_user_can( $sc_tax->cap->manage_terms ) && ! current_user_can( $sc_tax->cap->edit_terms ), 'Catalog management permissions.' );
@@ -29,7 +29,7 @@ $sc_win = array( 'stake' => '1', 'odds' => '3.00', 'bet_selection' => '1', 'matc
 $sc_loss = array( 'stake' => '9', 'odds' => '2.00', 'bet_selection' => '1', 'match_result' => '0', 'bet_status' => 'lost' );
 $sc_pending = array_merge( $sc_win, array( 'match_result' => 'pending', 'bet_status' => 'pending' ) );
 $sc_summary = Statistics::summarize( array( $sc_win, $sc_loss, $sc_pending ) );
-bpt_test_assert( array( 'tips' => 3, 'settled' => 2, 'wins' => 1, 'stakes' => 1000, 'returns' => 300, 'profit' => -700, 'void' => 0 ) === $sc_summary, 'Integer totals/settled-only accounting.' );
+bpt_test_assert( array( 'tips' => 3, 'settled' => 2, 'wins' => 1, 'stakes' => 1000, 'returns' => 300, 'profit' => -700, 'void' => 0, 'pending' => 1 ) === $sc_summary, 'Integer totals/settled-only accounting.' );
 bpt_test_assert( '-70.00%' === Statistics::percentage( $sc_summary['profit'], $sc_summary['stakes'] ), 'Yield must be weighted by stakes, not average individual yields (50%).' );
 bpt_test_assert( '50.00%' === Statistics::percentage( $sc_summary['wins'], $sc_summary['settled'] ), 'Win ratio must exclude pending tips.' );
 bpt_test_assert( '8.00%' === Statistics::percentage( 8000, 100000 ), '1000 staked, 1080 returned must yield 8%.' );
@@ -57,6 +57,9 @@ $sc_draft_id = $sc_create( $sc_win, 'draft' );
 $sc_private_id = $sc_create( $sc_win, 'private' );
 $sc_password_id = $sc_create( $sc_win, 'publish', 'testing-password' );
 $sc_totals = Statistics::totals();
+bpt_test_assert( (string) ( $sc_base['pending'] + 1 ) === do_shortcode( '[bpt_total_open_bets]' ), 'Open count must include only public pending tips.' );
+bpt_test_assert( (string) ( $sc_totals['settled'] + $sc_totals['void'] + $sc_totals['pending'] ) === do_shortcode( '[bpt_overall_total_tips]' ), 'Overall total includes evaluated and pending tips.' );
+bpt_test_assert( 'Total Number of Evaluated Tips' === get_term_by( 'slug', 'bpt-total-tips', Shortcode_Catalog::TAXONOMY )->name, 'Existing catalog label must be renamed.' );
 bpt_test_assert( $sc_base['tips'] + 3 === $sc_totals['tips'] && $sc_base['settled'] + 2 === $sc_totals['settled'], 'Public query included hidden tips or dropped pending tips.' );
 bpt_test_assert( $sc_base['profit'] - 700 === $sc_totals['profit'] && $sc_base['stakes'] + 1000 === $sc_totals['stakes'], 'Published query totals.' );
 bpt_test_assert( (string) ( $sc_base['settled'] + $sc_base['void'] + 2 ) === do_shortcode( '[bpt_total_tips]' ), 'Total shortcode must count completed tips while excluding pending and hidden tips.' );

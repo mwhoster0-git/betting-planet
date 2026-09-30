@@ -8,9 +8,11 @@ final class Shortcodes {
 	/** The same definitions drive WordPress registration and the taxonomy library. */
 	public static function definitions() {
 		return array(
+			'bpt_total_open_bets' => array( 'name' => __( 'Number of Open Bets', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected pending betting tips.', 'betting-planet-tips' ) ),
+			'bpt_overall_total_tips' => array( 'name' => __( 'Overall Total Tips', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected tips: won + lost + Storno + pending.', 'betting-planet-tips' ) ),
 			'bpt_open_bets' => array( 'name' => __( 'Open bets display', 'betting-planet-tips' ), 'description' => __( 'Swipeable card deck of published, valid pending tips. Use [bpt_open_bets] or [bpt_open_bets limit="10"]. Touch swipe, mouse drag, arrow keys and navigation buttons are supported.', 'betting-planet-tips' ) ),
 			'bpt_performance_board' => array( 'name' => __( 'Performance Board', 'betting-planet-tips' ), 'description' => __( 'Responsive table of published settled tips. Use [bpt_performance_board] or [bpt_performance_board limit="10"]. Pending and incomplete tips are excluded.', 'betting-planet-tips' ) ),
-			'bpt_total_tips' => array( 'name' => __( 'Total Number of Tips', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected betting tips, excluding pending tips.', 'betting-planet-tips' ) ),
+			'bpt_total_tips' => array( 'name' => __( 'Total Number of Evaluated Tips', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected betting tips, excluding pending tips.', 'betting-planet-tips' ) ),
 			'bpt_total_wins' => array( 'name' => __( 'Total Number of Won Bets', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected settled tips calculated as won.', 'betting-planet-tips' ) ),
 			'bpt_total_losses' => array( 'name' => __( 'Total Number of Lost Bets', 'betting-planet-tips' ), 'description' => __( 'Number of published, non-password-protected settled tips calculated as lost.', 'betting-planet-tips' ) ),
 			'bpt_yield' => array( 'name' => __( 'Yield Percentage', 'betting-planet-tips' ), 'description' => __( 'Overall yield: total profit divided by total stakes × 100. Uses won/lost public tips, excluding void stakes and refunds; never averages individual yields.', 'betting-planet-tips' ) ),
@@ -37,6 +39,12 @@ final class Shortcodes {
 		}
 		$totals = Statistics::totals();
 		switch ( $tag ) {
+			case 'bpt_total_open_bets':
+				$output = (string) $totals['pending'];
+				break;
+			case 'bpt_overall_total_tips':
+				$output = (string) ( $totals['settled'] + $totals['void'] + $totals['pending'] );
+				break;
 			case 'bpt_total_tips':
 				$output = (string) ( $totals['settled'] + $totals['void'] );
 				break;
